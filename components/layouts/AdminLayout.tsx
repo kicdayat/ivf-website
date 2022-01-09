@@ -14,6 +14,8 @@ import {
 import { useRouter } from "next/router";
 import Link from "next/link";
 
+import { useAuth } from "@/contexts/authContext";
+
 const navigation = [
   { name: "Dashboard", href: "dashboard", icon: TemplateIcon, current: false },
   { name: "Banners", href: "banners", icon: PhotographIcon, current: true },
@@ -25,7 +27,7 @@ const navigation = [
     current: false,
   },
   { name: "Events", href: "events", icon: CalendarIcon, current: false },
-  { name: "Settings", href: "settings", icon: CogIcon, current: false },
+  // { name: "Settings", href: "settings", icon: CogIcon, current: false },
 ];
 const userNavigation = [
   { name: "Your profile", href: "#" },
@@ -40,8 +42,14 @@ function classNames(...classes: string[]) {
 export interface AdminLayoutProps {}
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { pathname } = useRouter();
+  const { pathname, replace } = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    replace("/admin/login");
+  };
 
   return (
     <>
@@ -231,7 +239,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                       leaveTo="transform opacity-0 scale-95"
                     >
                       <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {userNavigation.map((item) => (
+                        {/* {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
                               <a
@@ -245,7 +253,33 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                               </a>
                             )}
                           </Menu.Item>
-                        ))}
+                        ))} */}
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
+                            >
+                              My Profile
+                            </a>
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700 w-full text-left"
+                              )}
+                              onClick={handleLogout}
+                            >
+                              Logout
+                            </button>
+                          )}
+                        </Menu.Item>
                       </Menu.Items>
                     </Transition>
                   </Menu>

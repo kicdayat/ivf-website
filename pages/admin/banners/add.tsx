@@ -1,20 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "react-query";
 import { PhotographIcon } from "@heroicons/react/outline";
 
+import axios from "@/libs/axiosInstance";
 import { AdminLayout } from "@/components/layouts";
 import { FormHelperText, FormLabel, Input, Switch } from "@/components/forms";
 import { Button } from "@/components/elements";
+import { useAuth } from "@/contexts/authContext";
 
 /* eslint-disable-next-line */
 export interface AddNewBannerProps {}
 
 export function AddNewBanner(props: AddNewBannerProps) {
   const router = useRouter();
+  const { isAuthenticated, isInitialized } = useAuth();
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
@@ -42,11 +45,7 @@ export function AddNewBanner(props: AddNewBannerProps) {
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/banners", {
-        method: "POST",
-        body: formData,
-      });
-      await res.json();
+      await axios.post("/banners", formData);
       await queryClient.invalidateQueries("banners");
       setIsLoading(false);
       router.push("/admin/banners");
@@ -54,6 +53,16 @@ export function AddNewBanner(props: AddNewBannerProps) {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      router.replace("/admin/login");
+    }
+  }, [isAuthenticated, isInitialized, router]);
+
+  if (!isInitialized || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <AdminLayout>

@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -8,6 +8,7 @@ import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "react-query";
 import { PhotographIcon } from "@heroicons/react/outline";
 
+import axios from "@/libs/axiosInstance";
 import { AdminLayout } from "@/components/layouts";
 import {
   FormLabel,
@@ -17,6 +18,7 @@ import {
   FormHelperText,
 } from "@/components/forms";
 import { Button } from "@/components/elements";
+import { useAuth } from "@/contexts/authContext";
 
 const RichText = dynamic(() => import("@/components/rich-text/RichText"), {
   ssr: false,
@@ -31,6 +33,7 @@ export interface AddNewArticleProps {}
 
 export function AddNewArticle(props: AddNewArticleProps) {
   const router = useRouter();
+  const { isAuthenticated, isInitialized } = useAuth();
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -62,11 +65,7 @@ export function AddNewArticle(props: AddNewArticleProps) {
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/articles", {
-        method: "POST",
-        body: formData,
-      });
-      await res.json();
+      await axios.post("/articles", formData);
       await queryClient.invalidateQueries("articles");
       setIsLoading(false);
       router.push("/admin/articles");
@@ -74,6 +73,16 @@ export function AddNewArticle(props: AddNewArticleProps) {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      router.replace("/admin/login");
+    }
+  }, [isAuthenticated, isInitialized, router]);
+
+  if (!isInitialized || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <AdminLayout>

@@ -132,7 +132,7 @@ const cls = (input: string) =>
     .trim();
 
 const classes = {
-  base: "focus:outline-none transition duration-200 font-semibold",
+  base: "focus:outline-none transition duration-200 font-semibold flex justify-center",
   disabled: "opacity-50 cursor-not-allowed",
   pill: "rounded-full",
   fullWidth: "w-full block",

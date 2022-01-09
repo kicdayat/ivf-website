@@ -7,10 +7,12 @@ import { useQueryClient } from "react-query";
 import { useDropzone } from "react-dropzone";
 import { PhotographIcon } from "@heroicons/react/outline";
 
+import axios from "@/libs/axiosInstance";
 import { AdminLayout } from "@/components/layouts";
 import { FormLabel, Input, Textarea, Switch } from "@/components/forms";
 import { AlertButton, Button } from "@/components/elements";
 import { useSingleNews } from "@/hooks/news";
+import { useAuth } from "@/contexts/authContext";
 
 const RichText = dynamic(() => import("@/components/rich-text/RichText"), {
   ssr: false,
@@ -21,6 +23,7 @@ export interface EditNewsProps {}
 
 export function EditNews(props: EditNewsProps) {
   const router = useRouter();
+  const { isAuthenticated, isInitialized } = useAuth();
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -66,14 +69,7 @@ export function EditNews(props: EditNewsProps) {
 
     setIsLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/v1/news/${router.query.id}`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
-      await res.json();
+      await axios.put(`/news/${router.query.id}`, formData);
       await queryClient.invalidateQueries("news");
       setIsLoading(false);
       router.push("/admin/news");
@@ -85,13 +81,7 @@ export function EditNews(props: EditNewsProps) {
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/v1/news/${router.query.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      await res.json();
+      await axios.delete(`/news/${router.query.id}`);
       await queryClient.invalidateQueries("news");
       setIsLoading(false);
       router.push("/admin/news");
@@ -99,6 +89,16 @@ export function EditNews(props: EditNewsProps) {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      router.replace("/admin/login");
+    }
+  }, [isAuthenticated, isInitialized, router]);
+
+  if (!isInitialized || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <AdminLayout>

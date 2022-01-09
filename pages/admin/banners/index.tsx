@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
+import { useAuth } from "@/contexts/authContext";
 import { AdminLayout } from "@/components/layouts";
 import PaginationTable from "@/components/table/PaginationTable";
 import { useBanners } from "@/hooks/banner";
@@ -10,6 +12,8 @@ import { useBanners } from "@/hooks/banner";
 export interface BannerProps {}
 
 export function Banner(props: BannerProps) {
+  const router = useRouter();
+  const { isAuthenticated, isInitialized } = useAuth();
   const { data: banners, isSuccess } = useBanners();
 
   const data = useMemo(
@@ -120,6 +124,16 @@ export function Banner(props: BannerProps) {
     ],
     []
   );
+
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      router.replace("/admin/login");
+    }
+  }, [isAuthenticated, isInitialized, router]);
+
+  if (!isInitialized || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <AdminLayout>

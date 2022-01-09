@@ -1,15 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { AdminLayout } from "@/components/layouts";
 import { PaginationTable } from "@/components/table/PaginationTable";
 import { useArticles } from "@/hooks/article";
+import { useAuth } from "@/contexts/authContext";
 
 /* eslint-disable-next-line */
 export interface ArticleProps {}
 
 export function Article(props: ArticleProps) {
+  const router = useRouter();
+  const { isAuthenticated, isInitialized } = useAuth();
   const { data: articles, isSuccess } = useArticles();
 
   const data = useMemo(
@@ -120,6 +124,16 @@ export function Article(props: ArticleProps) {
     ],
     []
   );
+
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      router.replace("/admin/login");
+    }
+  }, [isAuthenticated, isInitialized, router]);
+
+  if (!isInitialized || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <AdminLayout>
