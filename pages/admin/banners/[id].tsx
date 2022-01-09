@@ -33,9 +33,7 @@ export function EditBanner(props: EditBannerProps) {
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const { data: banner, isLoading: isLoadingBanner } = useBanner(
-    String(router.query.id || "")
-  );
+  const { data: banner } = useBanner(String(router.query.id || ""));
 
   useEffect(() => {
     if (banner) {

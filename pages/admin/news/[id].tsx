@@ -39,9 +39,7 @@ export function EditNews(props: EditNewsProps) {
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const { data: news, isLoading: isLoadingNews } = useSingleNews(
-    String(router.query.id || "")
-  );
+  const { data: news } = useSingleNews(String(router.query.id || ""));
 
   useEffect(() => {
     if (news) {
@@ -122,7 +120,7 @@ export function EditNews(props: EditNewsProps) {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-10">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="shadow sm:rounded-md sm:overflow-hidden">
             <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
               <div>
