@@ -11,7 +11,7 @@ export function EditBanner(props: EditBannerProps) {
   return (
     <AdminLayout>
       <div className="py-4">
-        <Link href="/admin/banner">
+        <Link href="/admin/banners">
           <a className="block mb-2 text-sm text-primary-700 hover:underline">
             &larr; Back to banner list
           </a>

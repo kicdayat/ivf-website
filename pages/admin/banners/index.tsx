@@ -106,7 +106,7 @@ export function Banner(props: BannerProps) {
         Footer: "Action",
         Cell: () => (
           <div className="flex items-center space-x-4">
-            <Link href="/admin/banner/123">
+            <Link href="/admin/banners/123">
               <a className="rounded-md px-4 py-1 bg-primary-600 text-white hover:bg-primary-700 text-sm">
                 Details
               </a>
@@ -126,7 +126,7 @@ export function Banner(props: BannerProps) {
       <div className="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
         <h3 className="text-2xl leading-6 font-bold text-gray-900">Banner</h3>
         <div className="mt-3 sm:mt-0 sm:ml-4">
-          <Link href="/admin/banner/add">
+          <Link href="/admin/banners/add">
             <a className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
               Add New Banner
             </a>

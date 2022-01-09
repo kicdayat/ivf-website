@@ -16,10 +16,15 @@ import Link from "next/link";
 
 const navigation = [
   { name: "Dashboard", href: "dashboard", icon: TemplateIcon, current: false },
-  { name: "Banner", href: "banner", icon: PhotographIcon, current: true },
+  { name: "Banners", href: "banners", icon: PhotographIcon, current: true },
   { name: "News", href: "news", icon: NewspaperIcon, current: false },
-  { name: "Article", href: "article", icon: ClipboardListIcon, current: false },
-  { name: "Event", href: "event", icon: CalendarIcon, current: false },
+  {
+    name: "Articles",
+    href: "articles",
+    icon: ClipboardListIcon,
+    current: false,
+  },
+  { name: "Events", href: "events", icon: CalendarIcon, current: false },
   { name: "Settings", href: "settings", icon: CogIcon, current: false },
 ];
 const userNavigation = [

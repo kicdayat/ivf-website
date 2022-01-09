@@ -1,21 +1,33 @@
+import { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import { AdminLayout } from "@/components/layouts";
-import { FormLabel, Input, Switch } from "@/components/forms";
+import { FormLabel, Input, Textarea, Switch } from "@/components/forms";
+import { Button } from "@/components/elements";
+
+const RichText = dynamic(() => import("@/components/rich-text/RichText"), {
+  ssr: false,
+});
 
 /* eslint-disable-next-line */
-export interface AddNewBannerProps {}
+export interface EditArticleProps {}
 
-export function AddNewBanner(props: AddNewBannerProps) {
+export function EditArticle(props: EditArticleProps) {
+  const [content, setContent] = useState("");
+
   return (
     <AdminLayout>
       <div className="py-4">
-        <Link href="/admin/banner">
+        <Link href="/admin/articles">
           <a className="block mb-2 text-sm text-primary-700 hover:underline">
-            &larr; Back to banner list
+            &larr; Back to article list
           </a>
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Add New Banner</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">Edit Article</h1>
+          <Button variant="danger">Delete</Button>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-10">
         <form>
@@ -29,9 +41,9 @@ export function AddNewBanner(props: AddNewBannerProps) {
               </div>
 
               <div>
-                <FormLabel htmlFor="tags">Tags</FormLabel>
+                <FormLabel htmlFor="description">Description</FormLabel>
                 <div className="mt-1">
-                  <Input id="tags" />
+                  <Textarea id="description" />
                 </div>
               </div>
 
@@ -78,6 +90,13 @@ export function AddNewBanner(props: AddNewBannerProps) {
               </div>
 
               <div>
+                <FormLabel htmlFor="content">Content</FormLabel>
+                <div className="mt-1">
+                  <RichText value={content} onChange={setContent} />
+                </div>
+              </div>
+
+              <div>
                 <FormLabel id="status">Publish</FormLabel>
                 <div className="mt-1">
                   <Switch id="status" />
@@ -99,4 +118,4 @@ export function AddNewBanner(props: AddNewBannerProps) {
   );
 }
 
-export default AddNewBanner;
+export default EditArticle;
