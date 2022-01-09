@@ -10,7 +10,7 @@ import { AdminLayout } from "@/components/layouts";
 import { FormLabel, Input, Switch } from "@/components/forms";
 import { Button } from "@/components/elements";
 import { useBanner } from "@/hooks/banner";
-import AlertButton from "@/components/alert-button/AlertButton";
+import { AlertButton } from "@/components/elements";
 
 /* eslint-disable-next-line */
 export interface EditBannerProps {}

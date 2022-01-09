@@ -4,41 +4,27 @@ import Link from "next/link";
 
 import { AdminLayout } from "@/components/layouts";
 import { PaginationTable } from "@/components/table/PaginationTable";
+import { useNews } from "@/hooks/news";
 
 /* eslint-disable-next-line */
 export interface NewsProps {}
 
 export function News(props: NewsProps) {
+  const { data: news, isSuccess } = useNews();
+
   const data = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "News 1",
-        description:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam facilis eius repudiandae, molestiae et cumque!",
-        tags: ["discount", "hospital"],
-        content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod incidunt vero libero nesciunt commodi sapiente pariatur quo! Sed, consequuntur laborum illo velit quisquam dolores nihil soluta sit aliquam enim incidunt.",
-        image:
-          "https://images.unsplash.com/photo-1577285930803-df9418bede68?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-        status: "published",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 2,
-        title: "News 2",
-        tags: ["discount", "hospital"],
-        content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod incidunt vero libero nesciunt commodi sapiente pariatur quo! Sed, consequuntur laborum illo velit quisquam dolores nihil soluta sit aliquam enim incidunt.",
-        image:
-          "https://images.unsplash.com/flagged/photo-1572531186838-27a5459566f2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-        status: "draft",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
-    []
+    () =>
+      isSuccess &&
+      news?.map((singleNews) => ({
+        id: singleNews.id,
+        title: singleNews.title,
+        status: singleNews.status,
+        tags: singleNews.tags?.split(","),
+        image: singleNews.image,
+        createdAt: new Date(singleNews.createdAt),
+        updatedAt: new Date(singleNews.updatedAt),
+      })),
+    [news, isSuccess]
   );
   const columns = useMemo(
     () => [
@@ -117,9 +103,9 @@ export function News(props: NewsProps) {
       {
         Header: "Action",
         Footer: "Action",
-        Cell: () => (
+        Cell: ({ row }: any) => (
           <div className="flex items-center space-x-4">
-            <Link href="/admin/news/123">
+            <Link href={`/admin/news/${row.original.id}`}>
               <a className="rounded-md px-4 py-1 bg-primary-600 text-white hover:bg-primary-700 text-sm">
                 Details
               </a>
@@ -150,7 +136,7 @@ export function News(props: NewsProps) {
         <div className="mt-4 overflow-hidden p-1">
           <PaginationTable
             showFooter={false}
-            data={data}
+            data={data || []}
             columns={columns}
             searchable={true}
             pagination={true}

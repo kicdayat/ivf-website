@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
-import { Button } from "../elements";
+import { Button } from "../../elements";
 
 /* eslint-disable-next-line */
 export interface AlertButton {

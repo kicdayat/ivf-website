@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { AdminLayout } from "@/components/layouts";
 import PaginationTable from "@/components/table/PaginationTable";
-import { useBanners } from "@/hooks/banner/useBanners";
+import { useBanners } from "@/hooks/banner";
 
 /* eslint-disable-next-line */
 export interface BannerProps {}
