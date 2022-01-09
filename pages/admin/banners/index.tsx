@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { AdminLayout } from "@/components/layouts";
 import PaginationTable from "@/components/table/PaginationTable";
-import { useBanners } from "@/hooks/useBanners";
+import { useBanners } from "@/hooks/banner/useBanners";
 
 /* eslint-disable-next-line */
 export interface BannerProps {}
@@ -104,9 +104,9 @@ export function Banner(props: BannerProps) {
       {
         Header: "Action",
         Footer: "Action",
-        Cell: () => (
+        Cell: ({ row }: any) => (
           <div className="flex items-center space-x-4">
-            <Link href="/admin/banners/123">
+            <Link href={`/admin/banners/${row.original.id}`}>
               <a className="rounded-md px-4 py-1 bg-primary-600 text-white hover:bg-primary-700 text-sm">
                 Details
               </a>

@@ -1,15 +1,7 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 
-export type Banner = {
-  id: number;
-  title: string;
-  image: string;
-  tags: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Banner } from "./type";
 
 type Response = Banner[];
 
