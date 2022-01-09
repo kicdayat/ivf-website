@@ -1,19 +1,80 @@
-import { useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import { FormEvent, useCallback, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { Tab } from "@headlessui/react";
+import { useDropzone } from "react-dropzone";
+import { useQueryClient } from "react-query";
+import { PhotographIcon } from "@heroicons/react/outline";
 
 import { AdminLayout } from "@/components/layouts";
-import { FormLabel, Input, Textarea, Switch } from "@/components/forms";
+import {
+  FormLabel,
+  Input,
+  Textarea,
+  Switch,
+  FormHelperText,
+} from "@/components/forms";
+import { Button } from "@/components/elements";
 
 const RichText = dynamic(() => import("@/components/rich-text/RichText"), {
   ssr: false,
 });
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 /* eslint-disable-next-line */
 export interface AddNewArticleProps {}
 
 export function AddNewArticle(props: AddNewArticleProps) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
+  const [tags, setTags] = useState("");
+  const [image, setImage] = useState<any>();
+  const [published, setPublished] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the files
+    if (acceptedFiles?.length) {
+      setImage(acceptedFiles[0]);
+    }
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const status = published ? "published" : "unpublished";
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("content", content);
+    formData.append("status", status);
+    formData.append("tags", tags);
+    formData.append("image", image);
+
+    setIsLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/v1/articles", {
+        method: "POST",
+        body: formData,
+      });
+      await res.json();
+      await queryClient.invalidateQueries("articles");
+      setIsLoading(false);
+      router.push("/admin/articles");
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="py-4">
@@ -25,61 +86,80 @@ export function AddNewArticle(props: AddNewArticleProps) {
         <h1 className="text-2xl font-bold text-gray-900">Add New Article</h1>
       </div>
       <div className="grid grid-cols-2 gap-10">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="shadow sm:rounded-md sm:overflow-hidden">
             <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
               <div>
                 <FormLabel htmlFor="title">Title</FormLabel>
                 <div className="mt-1">
-                  <Input id="title" />
+                  <Input
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
                 </div>
               </div>
 
               <div>
                 <FormLabel htmlFor="description">Description</FormLabel>
                 <div className="mt-1">
-                  <Textarea id="description" />
+                  <Textarea
+                    id="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Image
-                </label>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                  <div className="space-y-1 text-center">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                <FormLabel htmlFor="tags">Tags</FormLabel>
+                <div className="mt-1">
+                  <Input
+                    id="tags"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                  />
+                </div>
+                <FormHelperText>
+                  Separate by comma (ex: ivf,clinic)
+                </FormHelperText>
+              </div>
+
+              <div>
+                <FormLabel htmlFor="image">image</FormLabel>
+                <div className="mt-1 flex space-x-4">
+                  {image ? (
+                    <div className="flex flex-col items-stretch space-y-1">
+                      <img
+                        src={URL.createObjectURL(image as any)}
+                        alt="preview image"
+                        className="w-40"
                       />
-                    </svg>
-                    <div className="flex text-sm text-gray-600">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+                      <button
+                        className="py-1 bg-red-100 hover:bg-red-200 text-red-600 transition rounded-md text-sm font-semibold"
+                        onClick={() => setImage("")}
                       >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
+                        Clear
+                      </button>
                     </div>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG, GIF up to 10MB
-                    </p>
+                  ) : null}
+                  <div
+                    className=" flex-1 border-dashed border-2 flex justify-center items-center rounded-md"
+                    {...getRootProps()}
+                  >
+                    <input id="image" {...getInputProps()} />
+                    {isDragActive ? (
+                      <div>
+                        <p>Drop the files here ...</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center py-10">
+                        <PhotographIcon className="w-10 h-10 text-gray-400" />
+                        <p>
+                          {`Drag 'n' drop image here, or click to select file`}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -94,23 +174,185 @@ export function AddNewArticle(props: AddNewArticleProps) {
               <div>
                 <FormLabel id="status">Publish</FormLabel>
                 <div className="mt-1">
-                  <Switch id="status" />
+                  <Switch
+                    id="status"
+                    checked={published}
+                    onCheckedChange={setPublished}
+                  />
                 </div>
               </div>
             </div>
             <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
+              <Button type="submit" isLoading={isLoading}>
                 Save
-              </button>
+              </Button>
             </div>
           </div>
         </form>
+
+        <div>
+          <Tab.Group>
+            <Tab.List className="flex p-1 space-x-1 bg-blue-900/20 rounded-xl">
+              <Tab
+                className={({ selected }) =>
+                  classNames(
+                    "w-full py-2.5 text-sm leading-5 font-medium text-primary-700 rounded-lg",
+                    "focus:outline-none focus:ring-2 ring-offset-2 ring-offset-primary-400 ring-white ring-opacity-60",
+                    selected
+                      ? "bg-white shadow"
+                      : "text-gray-600 hover:bg-white/[0.12] hover:text-white"
+                  )
+                }
+              >
+                Preview Card
+              </Tab>
+              <Tab
+                className={({ selected }) =>
+                  classNames(
+                    "w-full py-2.5 text-sm leading-5 font-medium text-primary-700 rounded-lg",
+                    "focus:outline-none focus:ring-2 ring-offset-2 ring-offset-primary-400 ring-white ring-opacity-60",
+                    selected
+                      ? "bg-white shadow"
+                      : "text-gray-600 hover:bg-white/[0.12] hover:text-white"
+                  )
+                }
+              >
+                Preview Page
+              </Tab>
+            </Tab.List>
+            <Tab.Panels>
+              <Tab.Panel className="p-2">
+                {" "}
+                <ArticleCard
+                  date={new Date().toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  title={title || "Title"}
+                  description={description || "Description"}
+                  id={1}
+                  image={
+                    image
+                      ? URL.createObjectURL(image)
+                      : "https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80"
+                  }
+                />
+              </Tab.Panel>
+              <Tab.Panel className="p-2">
+                <ArticlePage
+                  date={new Date().toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  title={title || "Title"}
+                  description={description || "Description"}
+                  id={1}
+                  image={
+                    image
+                      ? URL.createObjectURL(image)
+                      : "https://via.placeholder.com"
+                  }
+                  content={content}
+                />
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
+        </div>
       </div>
     </AdminLayout>
   );
 }
 
 export default AddNewArticle;
+
+export interface ArticleCardProps {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  date: string;
+}
+
+export const ArticleCard = (props: ArticleCardProps) => {
+  return (
+    <div
+      key={props.id}
+      className="flex flex-col rounded-lg shadow-lg overflow-hidden max-w-[400px]"
+    >
+      <div className="flex-shrink-0">
+        <img
+          className="h-48 w-full object-cover"
+          src={props.image}
+          alt={props.title}
+        />
+      </div>
+      <div className="flex-1 bg-white p-6 flex flex-col justify-between">
+        <div className="flex-1">
+          {/* <p className="text-sm font-medium text-primary-600">
+                    <a href={post.category.href} className="hover:underline">
+                      {post.category.name}
+                    </a>
+                  </p> */}
+          <div className="block mt-2">
+            <p className="text-xl font-semibold text-gray-900">{props.title}</p>
+            <p className="mt-3 text-base text-gray-500">{props.description}</p>
+          </div>
+        </div>
+        <div className="mt-6 flex items-center">
+          <div className="flex-shrink-0">
+            <div>
+              <span className="sr-only">Admin IVF</span>
+              <img
+                className="h-10 w-10 rounded-full object-cover"
+                src="/mini-logo.png"
+                alt="ASHA IVF"
+              />
+            </div>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm font-medium text-gray-900">
+              <span className="hover:underline">Admin IVF</span>
+            </p>
+            <div className="flex space-x-1 text-sm text-gray-500">
+              <span>{props.date}</span>
+              {/* <time dateTime={post.datetime}>{post.date}</time>
+                      <span aria-hidden="true">&middot;</span>
+                      <span>{post.readingTime} read</span> */}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export interface ArticlePageProps {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  date: string;
+  content: string;
+}
+
+export const ArticlePage = (props: ArticlePageProps) => {
+  return (
+    <div className="bg-white shadow rounded-md p-6 mx-auto">
+      <h1 className="text-2xl font-bold text-center">{props.title}</h1>
+      <p className="text-gray-600 text-center">{props.date}</p>
+      <div className="mt-6 flex justify-center">
+        <img
+          className="aspect-video object-cover"
+          src={props.image}
+          alt={props.title}
+        />
+      </div>
+      <div
+        className="mt-6 prose mx-auto prose-headings:text-center"
+        dangerouslySetInnerHTML={{ __html: props.content }}
+      />
+    </div>
+  );
+};

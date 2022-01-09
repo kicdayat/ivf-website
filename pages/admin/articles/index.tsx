@@ -4,39 +4,29 @@ import Link from "next/link";
 
 import { AdminLayout } from "@/components/layouts";
 import { PaginationTable } from "@/components/table/PaginationTable";
+import { useArticles } from "@/hooks/article";
+
 /* eslint-disable-next-line */
 export interface ArticleProps {}
 
 export function Article(props: ArticleProps) {
+  const { data: articles, isSuccess } = useArticles();
+
   const data = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Article 1",
-        tags: ["discount", "hospital"],
-        content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod incidunt vero libero nesciunt commodi sapiente pariatur quo! Sed, consequuntur laborum illo velit quisquam dolores nihil soluta sit aliquam enim incidunt.",
-        image:
-          "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-        status: "published",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 2,
-        title: "Article 2",
-        tags: ["discount", "hospital"],
-        content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod incidunt vero libero nesciunt commodi sapiente pariatur quo! Sed, consequuntur laborum illo velit quisquam dolores nihil soluta sit aliquam enim incidunt.",
-        image:
-          "https://images.unsplash.com/photo-1579165466991-467135ad3110?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-        status: "draft",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
-    []
+    () =>
+      isSuccess &&
+      articles?.map((article) => ({
+        id: article.id,
+        title: article.title,
+        status: article.status,
+        tags: article.tags?.split(","),
+        image: article.image,
+        createdAt: new Date(article.createdAt),
+        updatedAt: new Date(article.updatedAt),
+      })),
+    [articles, isSuccess]
   );
+
   const columns = useMemo(
     () => [
       {
@@ -114,9 +104,9 @@ export function Article(props: ArticleProps) {
       {
         Header: "Action",
         Footer: "Action",
-        Cell: () => (
+        Cell: ({ row }: any) => (
           <div className="flex items-center space-x-4">
-            <Link href="/admin/articles/123">
+            <Link href={`/admin/articles/${row.original.id}`}>
               <a className="rounded-md px-4 py-1 bg-primary-600 text-white hover:bg-primary-700 text-sm">
                 Details
               </a>
@@ -147,7 +137,7 @@ export function Article(props: ArticleProps) {
         <div className="mt-4 overflow-hidden p-1">
           <PaginationTable
             showFooter={false}
-            data={data}
+            data={data || []}
             columns={columns}
             searchable={true}
             pagination={true}

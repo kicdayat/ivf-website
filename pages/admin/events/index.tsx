@@ -4,40 +4,30 @@ import Link from "next/link";
 
 import { AdminLayout } from "@/components/layouts";
 import { PaginationTable } from "@/components/table/PaginationTable";
+import { useEvents } from "@/hooks/event";
 
 /* eslint-disable-next-line */
 export interface EventProps {}
 
 export function Event(props: EventProps) {
+  const { data: events, isSuccess } = useEvents();
+
   const data = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Event 1",
-        tags: ["discount", "hospital"],
-        content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod incidunt vero libero nesciunt commodi sapiente pariatur quo! Sed, consequuntur laborum illo velit quisquam dolores nihil soluta sit aliquam enim incidunt.",
-        image:
-          "https://images.unsplash.com/photo-1607082349566-187342175e2f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-        status: "published",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 2,
-        title: "Event 2",
-        tags: ["discount", "hospital"],
-        content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod incidunt vero libero nesciunt commodi sapiente pariatur quo! Sed, consequuntur laborum illo velit quisquam dolores nihil soluta sit aliquam enim incidunt.",
-        image:
-          "https://images.unsplash.com/photo-1626809259716-29eadc96fea9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
-        status: "draft",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ],
-    []
+    () =>
+      isSuccess &&
+      events?.map((event) => ({
+        id: event.id,
+        title: event.title,
+        status: event.status,
+        tags: event.tags?.split(","),
+        image: event.image,
+        eventDate: new Date(event.eventDate),
+        createdAt: new Date(event.createdAt),
+        updatedAt: new Date(event.updatedAt),
+      })),
+    [events, isSuccess]
   );
+
   const columns = useMemo(
     () => [
       {
@@ -91,6 +81,17 @@ export function Event(props: EventProps) {
         ),
       },
       {
+        Header: "Event Date",
+        Footer: "Event Date",
+        accessor: "eventDate",
+        Cell: ({ value }: { value: Date }) =>
+          value.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }),
+      },
+      {
         Header: "Created At",
         Footer: "Created At",
         accessor: "createdAt",
@@ -115,9 +116,9 @@ export function Event(props: EventProps) {
       {
         Header: "Action",
         Footer: "Action",
-        Cell: () => (
+        Cell: ({ row }: any) => (
           <div className="flex items-center space-x-4">
-            <Link href="/admin/events/123">
+            <Link href={`/admin/events/${row.original.id}`}>
               <a className="rounded-md px-4 py-1 bg-primary-600 text-white hover:bg-primary-700 text-sm">
                 Details
               </a>
@@ -148,7 +149,7 @@ export function Event(props: EventProps) {
         <div className="mt-4 overflow-hidden p-1">
           <PaginationTable
             showFooter={false}
-            data={data}
+            data={data || []}
             columns={columns}
             searchable={true}
             pagination={true}
