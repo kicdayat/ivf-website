@@ -7,7 +7,6 @@ import type { News } from "./type";
 type Response = News;
 
 export const useSingleNews = (id?: string) => {
-  console.log("id", id);
   return useQuery<Response, Error>(
     ["news", id],
     () => axios.get(`/news/${id}`).then((res) => res.data),

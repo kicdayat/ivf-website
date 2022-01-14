@@ -7,7 +7,6 @@ import type { Banner } from "./type";
 type Response = Banner;
 
 export const useBanner = (id?: string) => {
-  console.log("id", id);
   return useQuery<Response, Error>(
     ["banners", id],
     () => axios.get(`/banners/${id}`).then((res) => res.data),
