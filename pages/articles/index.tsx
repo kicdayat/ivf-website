@@ -5,7 +5,6 @@ import Link from "next/link";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { useArticles } from "@/hooks/article";
-import { CalendarIcon } from "@heroicons/react/outline";
 
 // const articles = [
 //   {

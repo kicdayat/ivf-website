@@ -39,7 +39,7 @@ const AboutUs: NextPage = () => {
             />
           </div>
         </div>
-        <div>
+        <div className="mb-10">
           <h2 className="text-3xl font-bold text-center mb-10">Visi</h2>
           <div className="grid grid-cols-3 gap-10">
             <div className="bg-gray-100 py-6 px-8 rounded-lg shadow">
@@ -145,7 +145,7 @@ const AboutUs: NextPage = () => {
                 laudantium ad dolores laboriosam laborum quidem cum nihil
                 consequuntur iste, id vel aut fugiat modi ipsum. Consequuntur?
               </p>
-              <p className="leading-loose">
+              <p className="mt-4 leading-loose">
                 Lorem, ipsum dolor sit amet consectetur adipisicing elit.
                 Dignissimos quae, cupiditate consequuntur similique ratione
                 exercitationem deserunt inventore. Earum cum expedita libero

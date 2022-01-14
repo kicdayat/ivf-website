@@ -132,7 +132,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="mt-8 xl:mt-0">
-            <h3 className="text-sm font-semibold text-gray-200 tracking-wider uppercase">
+            {/* <h3 className="text-sm font-semibold text-gray-200 tracking-wider uppercase">
               Subscribe to our newsletter
             </h3>
             <p className="mt-4 text-base text-gray-100">
@@ -160,9 +160,9 @@ export default function Footer() {
                   Subscribe
                 </button>
               </div>
-            </form>
+            </form> */}
 
-            <h3 className="mt-8 text-sm font-semibold text-gray-200 tracking-wider uppercase">
+            <h3 className="text-sm font-semibold text-gray-200 tracking-wider uppercase">
               Download Apps
             </h3>
             <button>

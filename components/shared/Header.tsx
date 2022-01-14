@@ -8,15 +8,20 @@ import Banner from "./Banner";
 
 const departmentsAndServices = [
   {
+    name: "Layanan Medis",
+    description: "Learn about tips, product updates and company culture.",
+    href: "/medical-service",
+  },
+  {
     name: "Layanan Penunjang",
     description: "Learn about tips, product updates and company culture.",
-    href: "#",
+    href: "/support-service",
   },
   {
     name: "Fasilitas Klinik",
     description:
       "Get all of your questions answered in our forums of contact support.",
-    href: "#",
+    href: "/facility",
   },
 ];
 
@@ -53,11 +58,11 @@ const patients = [
 ];
 
 const articles = [
-  {
-    name: "Update Terbaru",
-    description: "Learn about tips, product updates and company culture.",
-    href: "/latest-articles",
-  },
+  // {
+  //   name: "Update Terbaru",
+  //   description: "Learn about tips, product updates and company culture.",
+  //   href: "/latest-articles",
+  // },
   {
     name: "Acara",
     description:
@@ -275,18 +280,16 @@ export default function Header() {
                               <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                 <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
                                   {departmentsAndServices.map((item) => (
-                                    <a
-                                      key={item.name}
-                                      href={item.href}
-                                      className="-m-3 p-2 block rounded-md hover:bg-gray-50 transition ease-in-out duration-150"
-                                    >
-                                      <p className="text-base font-medium text-gray-900">
-                                        {item.name}
-                                      </p>
-                                      {/* <p className="mt-1 text-sm text-gray-500">
+                                    <Link key={item.name} href={item.href}>
+                                      <a className="-m-3 p-2 block rounded-md hover:bg-gray-50 transition ease-in-out duration-150">
+                                        <p className="text-base font-medium text-gray-900">
+                                          {item.name}
+                                        </p>
+                                        {/* <p className="mt-1 text-sm text-gray-500">
                                           {item.description}
                                         </p> */}
-                                    </a>
+                                      </a>
+                                    </Link>
                                   ))}
                                 </div>
                               </div>
@@ -436,20 +439,27 @@ export default function Header() {
                             <Popover.Panel className="absolute z-10 left-1/2 transform -translate-x-1/2 mt-3 px-2 w-screen max-w-xs sm:px-0">
                               <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                 <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                                  {accessAndBook.map((item) => (
-                                    <a
-                                      key={item.name}
-                                      href={item.href}
-                                      className="-m-3 p-2 block rounded-md hover:bg-gray-50 transition ease-in-out duration-150"
-                                    >
+                                  <Link href="/location">
+                                    <a className="-m-3 p-2 block rounded-md hover:bg-gray-50 transition ease-in-out duration-150">
                                       <p className="text-base font-medium text-gray-900">
-                                        {item.name}
+                                        Lokasi & Petunjuk Arah
                                       </p>
                                       {/* <p className="mt-1 text-sm text-gray-500">
                                           {item.description}
                                         </p> */}
                                     </a>
-                                  ))}
+                                  </Link>
+                                  <a
+                                    href={`${process.env.NEXT_PUBLIC_PATIENT_APP_URL}/booking`}
+                                    className="-m-3 p-2 block rounded-md hover:bg-gray-50 transition ease-in-out duration-150"
+                                  >
+                                    <p className="text-base font-medium text-gray-900">
+                                      Buat Janji
+                                    </p>
+                                    {/* <p className="mt-1 text-sm text-gray-500">
+                                          {item.description}
+                                        </p> */}
+                                  </a>
                                 </div>
                               </div>
                             </Popover.Panel>
