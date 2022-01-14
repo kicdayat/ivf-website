@@ -189,9 +189,12 @@ export default function Header() {
                   </div>
 
                   {/* Profile dropdown */}
-                  <button className="px-4 py-1.5 bg-primary-500 hover:bg-primary-400 transition font-semibold rounded-md">
+                  <a
+                    href={process.env.NEXT_PUBLIC_PATIENT_APP_URL}
+                    className="px-4 py-1.5 bg-primary-500 hover:bg-primary-400 transition font-semibold rounded-md"
+                  >
                     Login
-                  </button>
+                  </a>
                 </div>
 
                 {/* Search */}
@@ -707,9 +710,12 @@ export default function Header() {
                           </Disclosure>
                         </div>
                         <div className="px-4 mt-2 mb-2">
-                          <button className="px-4 py-2 bg-primary-500 hover:bg-primary-400 transition font-semibold rounded-md w-full">
+                          <a
+                            href="http://localhost:3001"
+                            className="px-4 py-2 bg-primary-500 hover:bg-primary-400 transition font-semibold rounded-md w-full"
+                          >
                             Login
-                          </button>
+                          </a>
                         </div>
                       </div>
                     </div>
