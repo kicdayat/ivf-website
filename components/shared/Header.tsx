@@ -704,25 +704,27 @@ export default function Header() {
                                   Akses & Buat Janji
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="space-y-1">
-                                  {accessAndBook.map((subItem) => (
-                                    <Disclosure.Button
-                                      key={subItem.name}
-                                      as="a"
-                                      href={subItem.href}
-                                      className="group w-full flex items-center pl-10 pr-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
-                                    >
-                                      {subItem.name}
-                                    </Disclosure.Button>
-                                  ))}
+                                  <Disclosure.Button className="group w-full flex items-center pl-10 pr-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50">
+                                    <Link href="/location">
+                                      <a>Lokasi & Petunjuk Arah</a>
+                                    </Link>
+                                  </Disclosure.Button>
+                                  <Disclosure.Button
+                                    as="a"
+                                    href={`${process.env.NEXT_PUBLIC_PATIENT_APP_URL}/booking`}
+                                    className="group w-full flex items-center pl-10 pr-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
+                                  >
+                                    Buat Janji
+                                  </Disclosure.Button>
                                 </Disclosure.Panel>
                               </>
                             )}
                           </Disclosure>
                         </div>
-                        <div className="px-4 mt-2 mb-2">
+                        <div className="px-4 mt-6 mb-2 w-full">
                           <a
                             href="http://localhost:3001"
-                            className="px-4 py-2 bg-primary-500 hover:bg-primary-400 transition font-semibold rounded-md w-full"
+                            className="block px-4 py-2 bg-primary-500 hover:bg-primary-400 transition font-semibold rounded-md w-full text-center"
                           >
                             Login
                           </a>
